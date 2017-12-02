@@ -28,24 +28,15 @@ public class Main {
                 // more code
 
                 int sum = 0;
-                // set first int
-                int firstInt = Character.getNumericValue(line.charAt(0));
-                int previous = Character.getNumericValue(line.charAt(0));
 
-                for (int i = 1; i < line.length(); i++) {
+                for (int i = 0; i < line.length(); i++) {
                     // current int
                     int j = Character.getNumericValue(line.charAt(i));
-
+                    int k = Character.getNumericValue(line.charAt((line.length()/2 + i)%line.length()));
                     // if previous is same as current, add to sum
-                    if (j == previous) {
+                    if (j == k) {
                         sum += j;
                     }
-
-                    // set previous int for the next round
-                    previous = j;
-                }
-                if (Character.getNumericValue(line.charAt(line.length()-1)) == firstInt) {
-                    sum += firstInt;
                 }
 
                 System.out.println("Sum is: " + sum);
