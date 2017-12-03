@@ -44,7 +44,20 @@ public class Main {
                     }
                 });
 
-                sum += arr[arr.length - 1] - arr[0];
+                // the array is sorted
+                // find the first and only evenly divisible values
+                // go through the array an element by element
+
+                outerloop:
+                for (int i = arr.length-1; i > 1; i--) {
+                    for (int j = i-1; j >= 0; j--) {
+                        if (arr[i]%arr[j] == 0) {
+                            // add division result and jump out
+                            sum += arr[i]/arr[j];
+                            break outerloop;
+                        }
+                    }
+                }
             }
 
             System.out.println("Sum: " + sum);
