@@ -1,72 +1,30 @@
 package com.company;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
 public class Main {
-    public static void main(String [] args) {
 
-        // The name of the file to open.
-        String fileName = "file.txt";
+    public static void main(String[] args) {
+	// write your code here
+        // The formation consists of squares
+        // each new square is formed by the rule 2*n-1 where n is the number of the squares and the result is the size of the side of a given square
 
-        // This will reference one line at a time
-        String line = "";
-
-        try {
-            // FileReader reads text files in the default encoding.
-            FileReader fileReader =
-                    new FileReader(fileName);
-
-            // Always wrap FileReader in BufferedReader.
-            BufferedReader bufferedReader =
-                    new BufferedReader(fileReader);
-
-            while((line = bufferedReader.readLine()) != null) {
-                System.out.println(line);
-
-                // more code
-
-                int sum = 0;
-                // set first int
-                int firstInt = Character.getNumericValue(line.charAt(0));
-                int previous = Character.getNumericValue(line.charAt(0));
-
-                for (int i = 1; i < line.length(); i++) {
-                    // current int
-                    int j = Character.getNumericValue(line.charAt(i));
-
-                    // if previous is same as current, add to sum
-                    if (j == previous) {
-                        sum += j;
-                    }
-
-                    // set previous int for the next round
-                    previous = j;
-                }
-                if (Character.getNumericValue(line.charAt(line.length()-1)) == firstInt) {
-                    sum += firstInt;
-                }
-
-                System.out.println("Sum is: " + sum);
-
-            }
-
-            // Always close files.
-            bufferedReader.close();
+        int seed = 361527;
+        System.out.println("Ceil rounded root of seed: " + Math.ceil(Math.sqrt(seed)));
+        // round to the next odd number
+        double odd = Math.ceil(Math.sqrt(seed));
+        if (odd%2 == 0) {
+            odd += 1;
         }
-        catch(FileNotFoundException ex) {
-            System.out.println(
-                    "Unable to open file '" +
-                            fileName + "'");
+        System.out.println("Next odd number: " + odd);
+        System.out.println("Square of root of seed: " + odd*odd);
+        double distanceFromCorner = 0;
+        if ((odd*odd-seed)%odd < (odd*odd/2)) {
+            System.out.println("Distance1 of seed from a corner: " + (odd * odd - seed) % (odd-1));
+            distanceFromCorner = (odd * odd - seed) % (odd-1);
+        } else {
+            System.out.println("Distance2 of seed from a corner: " + (((odd * odd - seed) % odd) - (odd/2)));
+            distanceFromCorner = (((odd * odd - seed) % odd) - (odd/2));
         }
-        catch(IOException ex) {
-            System.out.println(
-                    "Error reading file '"
-                            + fileName + "'");
-            // Or we could just do this:
-            // ex.printStackTrace();
-        }
-
+        System.out.println("Distance to half way line: " + (Math.floor(odd/2)-distanceFromCorner));
+        System.out.println("Distance to center: " + (Math.floor(odd/2)-distanceFromCorner+((odd+1)/2-1)));
     }
 }
