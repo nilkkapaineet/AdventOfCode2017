@@ -1,8 +1,6 @@
 package com.company;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     public static void main(String [] args) {
@@ -22,35 +20,34 @@ public class Main {
             BufferedReader bufferedReader =
                     new BufferedReader(fileReader);
 
+            int sum = 0;
+
             while((line = bufferedReader.readLine()) != null) {
-                System.out.println(line);
 
                 // more code
 
-                int sum = 0;
-                // set first int
-                int firstInt = Character.getNumericValue(line.charAt(0));
-                int previous = Character.getNumericValue(line.charAt(0));
+                line = line.replaceAll("[^0-9]+", " ");
+                String[] strings = (line.trim().split(" "));
+                Integer[] arr = new Integer[strings.length];
 
-                for (int i = 1; i < line.length(); i++) {
-                    // current int
-                    int j = Character.getNumericValue(line.charAt(i));
+                for (int i = 0; i < strings.length; i++) {
+                    arr[i] = Integer.parseInt(strings[i]);
+                }
 
-                    // if previous is same as current, add to sum
-                    if (j == previous) {
-                        sum += j;
+                // find smallest and biggest numbers from an array
+                Arrays.sort(arr, new Comparator<Integer>()
+                {
+                    @Override
+                    public int compare(Integer x, Integer y)
+                    {
+                        return x - y;
                     }
+                });
 
-                    // set previous int for the next round
-                    previous = j;
-                }
-                if (Character.getNumericValue(line.charAt(line.length()-1)) == firstInt) {
-                    sum += firstInt;
-                }
-
-                System.out.println("Sum is: " + sum);
-
+                sum += arr[arr.length - 1] - arr[0];
             }
+
+            System.out.println("Sum: " + sum);
 
             // Always close files.
             bufferedReader.close();
@@ -67,6 +64,5 @@ public class Main {
             // Or we could just do this:
             // ex.printStackTrace();
         }
-
     }
 }
