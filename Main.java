@@ -17,12 +17,12 @@ public class Main {
         System.out.println("Next odd number: " + odd);
         System.out.println("Square of root of seed: " + odd*odd);
         double distanceFromCorner = 0;
-        if ((odd*odd-seed)%odd < (odd*odd/2)) {
+        if ((odd*odd-seed)%(odd-1) < odd/2) {
             System.out.println("Distance1 of seed from a corner: " + (odd * odd - seed) % (odd-1));
             distanceFromCorner = (odd * odd - seed) % (odd-1);
         } else {
-            System.out.println("Distance2 of seed from a corner: " + (((odd * odd - seed) % odd) - (odd/2)));
-            distanceFromCorner = (((odd * odd - seed) % odd) - (odd/2));
+            System.out.println("Distance2 of seed from a corner: " + (((odd * odd - seed) % (odd-1)) - Math.floor(odd/2)));
+            distanceFromCorner = (((odd * odd - seed) % (odd-1)) - Math.floor(odd/2));
         }
         System.out.println("Distance to half way line: " + (Math.floor(odd/2)-distanceFromCorner));
         System.out.println("Distance to center: " + (Math.floor(odd/2)-distanceFromCorner+((odd+1)/2-1)));
