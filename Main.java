@@ -22,35 +22,30 @@ public class Main {
             BufferedReader bufferedReader =
                     new BufferedReader(fileReader);
 
+            int sum = 0;
             while((line = bufferedReader.readLine()) != null) {
-                System.out.println(line);
+                //System.out.println(line);
 
                 // more code
+                line = line.replaceAll("[^a-z]+", " ");
+                String[] strings = (line.trim().split(" "));
 
-                int sum = 0;
-                // set first int
-                int firstInt = Character.getNumericValue(line.charAt(0));
-                int previous = Character.getNumericValue(line.charAt(0));
-
-                for (int i = 1; i < line.length(); i++) {
-                    // current int
-                    int j = Character.getNumericValue(line.charAt(i));
-
-                    // if previous is same as current, add to sum
-                    if (j == previous) {
-                        sum += j;
+                boolean failed = false;
+                for (int i=0; i<strings.length-1; i++) {
+                    for (int j=i+1; j<strings.length; j++) {
+                        if (strings[i].equals(strings[j])) {
+                            // pass
+                            failed = true;
+                            break;
+                        }
                     }
-
-                    // set previous int for the next round
-                    previous = j;
                 }
-                if (Character.getNumericValue(line.charAt(line.length()-1)) == firstInt) {
-                    sum += firstInt;
+                if (!failed) {
+                    sum += 1;
                 }
-
-                System.out.println("Sum is: " + sum);
 
             }
+            System.out.println("Sum: " + sum);
 
             // Always close files.
             bufferedReader.close();
