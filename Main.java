@@ -1,6 +1,7 @@
 package com.company;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -31,12 +32,12 @@ public class Main {
                 String[] strings = (line.trim().split(" "));
 
                 boolean failed = false;
+                outerloop:
                 for (int i=0; i<strings.length-1; i++) {
                     for (int j=i+1; j<strings.length; j++) {
-                        if (strings[i].equals(strings[j])) {
-                            // pass
+                        if (isAnagram(strings[i], strings[j])) {
                             failed = true;
-                            break;
+                            break outerloop;
                         }
                     }
                 }
@@ -64,4 +65,15 @@ public class Main {
         }
 
     }
+
+    private static boolean isAnagram(String word1, String word2) {
+        word1 = word1.replaceAll("\\s", "").toLowerCase();
+        word2 = word2.replaceAll("\\s", "").toLowerCase();
+        char[] word1Arr = word1.toCharArray();
+        char[] word2Arr = word2.toCharArray();
+        Arrays.sort(word1Arr);
+        Arrays.sort(word2Arr);
+        return (Arrays.equals(word1Arr, word2Arr));
+    }
+
 }
