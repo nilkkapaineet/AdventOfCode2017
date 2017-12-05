@@ -62,11 +62,11 @@ public class Main {
             int index = 0;
             do {
                 int tmp = myArray[index];
-             //   if (tmp < 3) {
+                if (tmp < 3) {
                     myArray[index] += 1;
-            //    } else {
-             //       myArray[index] -= 1;
-             //   }
+                } else {
+                    myArray[index] -= 1;
+                }
                 index += tmp;
                 sum += 1;
             } while (index < maxLength && index >= 0);
