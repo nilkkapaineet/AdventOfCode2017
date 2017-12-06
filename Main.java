@@ -1,8 +1,8 @@
 package com.company;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Main {
     public static void main(String [] args) {
@@ -22,38 +22,34 @@ public class Main {
             BufferedReader bufferedReader =
                     new BufferedReader(fileReader);
 
+            int sum = 0;
+
+            int lines = 0;
+            List<Integer[]> x = new ArrayList<Integer[]>();
+
             while((line = bufferedReader.readLine()) != null) {
-                System.out.println(line);
 
                 // more code
-
-                int sum = 0;
-                // set first int
-                int firstInt = Character.getNumericValue(line.charAt(0));
-                int previous = Character.getNumericValue(line.charAt(0));
-
-                for (int i = 1; i < line.length(); i++) {
-                    // current int
-                    int j = Character.getNumericValue(line.charAt(i));
-
-                    // if previous is same as current, add to sum
-                    if (j == previous) {
-                        sum += j;
-                    }
-
-                    // set previous int for the next round
-                    previous = j;
+                line = line.replaceAll("[^-?0-9]+", " ");
+                String[] str = line.trim().split(" ");
+                Integer[] ints = new Integer[str.length];
+                for (int i = 0; i < str.length; i++) {
+                    ints[i] = Integer.parseInt(str[i]);
+                    System.out.println(ints[i]);
                 }
-                if (Character.getNumericValue(line.charAt(line.length()-1)) == firstInt) {
-                    sum += firstInt;
-                }
-
-                System.out.println("Sum is: " + sum);
-
+                x.add(ints);
             }
+
+            // find greatest index
+            // divide value for each index
+            // add new array of numbers to list
+            // check if there´s already similar array of ints
 
             // Always close files.
             bufferedReader.close();
+
+            System.out.println("Sum: " + line);
+
         }
         catch(FileNotFoundException ex) {
             System.out.println(
@@ -67,6 +63,5 @@ public class Main {
             // Or we could just do this:
             // ex.printStackTrace();
         }
-
     }
 }
