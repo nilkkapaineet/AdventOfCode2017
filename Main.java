@@ -25,14 +25,14 @@ public class Main {
             int sum = 0;
 
             int lines = 0;
-            List<Integer[]> x = new ArrayList<Integer[]>();
+            List<int[]> x = new ArrayList<int[]>();
 
             while((line = bufferedReader.readLine()) != null) {
 
                 // more code
                 line = line.replaceAll("[^-?0-9]+", " ");
                 String[] str = line.trim().split(" ");
-                Integer[] ints = new Integer[str.length];
+                int[] ints = new int[str.length];
                 for (int i = 0; i < str.length; i++) {
                     ints[i] = Integer.parseInt(str[i]);
                     System.out.println(ints[i]);
@@ -48,7 +48,29 @@ public class Main {
             // Always close files.
             bufferedReader.close();
 
-            System.out.println("Sum: " + line);
+            for (int i=0; i<x.size(); i++) {
+                int maxValue = 0;
+                int maxIndex = 0;
+                for (int j=0; j<x.get(i).length; j++) {
+                    if (x.get(i)[j] > maxValue) {
+                        maxValue = x.get(i)[j];
+                        maxIndex = j;
+                    }
+                }
+                int divide = x.get(i)[maxIndex];
+                x.get(i)[maxIndex] = 0;
+                for (int j=divide; j>=0; j--) {
+                    if (x.get(i)[maxIndex+1] <= x.get(i).length) {
+                        int[] temp = x.get(i);
+
+                    }
+                }
+            }
+
+            int[] temp = x.get(0);
+            for (int i=0; i<temp.length; i++) {
+                System.out.println("Sum: " + temp[i]);
+            }
 
         }
         catch(FileNotFoundException ex) {
