@@ -1,8 +1,8 @@
+
 package com.company;
+
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     public static void main(String [] args) {
@@ -22,35 +22,78 @@ public class Main {
             BufferedReader bufferedReader =
                     new BufferedReader(fileReader);
 
+            String all = "";
+
             while((line = bufferedReader.readLine()) != null) {
-                System.out.println(line);
-
-                // more code
-
-                int sum = 0;
-                // set first int
-                int firstInt = Character.getNumericValue(line.charAt(0));
-                int previous = Character.getNumericValue(line.charAt(0));
-
-                for (int i = 1; i < line.length(); i++) {
-                    // current int
-                    int j = Character.getNumericValue(line.charAt(i));
-
-                    // if previous is same as current, add to sum
-                    if (j == previous) {
-                        sum += j;
-                    }
-
-                    // set previous int for the next round
-                    previous = j;
-                }
-                if (Character.getNumericValue(line.charAt(line.length()-1)) == firstInt) {
-                    sum += firstInt;
-                }
-
-                System.out.println("Sum is: " + sum);
-
+                all = line;
             }
+
+            // remove ! chars from a string
+            int found = 0;
+            while (true) {
+                found = all.indexOf('!');
+                if (found == -1) { break; }
+                StringBuilder sb = new StringBuilder(all);
+                sb.deleteCharAt(found);
+                // repeat the same and the next char is removed
+                sb.deleteCharAt(found);
+                all = sb.toString();
+            }
+
+            // remove garbage marked within <>
+            int start = 0;
+            int end = 0;
+            while (true) {
+                start = all.indexOf('<');
+                end = all.indexOf('>');
+                if (start == -1 || end == -1) { break; }
+                StringBuilder sb = new StringBuilder(all);
+                while (start != end+1) {
+                    sb.deleteCharAt(start);
+                    end--;
+                }
+                all = sb.toString();
+            }
+
+            // count groups marked with {}
+            // nested groups score incremented points aka { {} { {} } } scores 1+2+2+3=8 points
+            ArrayList<Integer> starts = new ArrayList<Integer>(); // contains indexes of {'s
+            ArrayList<Integer> ends = new ArrayList<Integer>(); // contains indexes of }'s
+
+            int index = all.indexOf('{');
+            while (index >= 0) {
+                starts.add(index);
+                index = all.indexOf('{', index + 1);
+            }
+            index = all.indexOf('}');
+            while (index >= 0) {
+                ends.add(index);
+                index = all.indexOf('}', index + 1);
+            }
+
+            // count points
+            int totalPoints = 0;
+            for (int i=0; i<ends.size();) {
+                int nestedPointsCount = 0;
+                int ce = ends.get(i);
+                int cs = 0;
+                int startToRemoved = starts.size();
+                for (int j=0; j<starts.size(); j++) {
+                    cs = starts.get(j);
+                    nestedPointsCount++;
+                    if (cs > ce) {
+                        nestedPointsCount--;
+                        startToRemoved = j;
+                        break;
+                    }
+                }
+                // remove ones from starts and ends
+                starts.remove(startToRemoved-1);
+                ends.remove(0);
+                totalPoints += nestedPointsCount;
+            }
+
+            System.out.println("Total points from groups: " + totalPoints);
 
             // Always close files.
             bufferedReader.close();
