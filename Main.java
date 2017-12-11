@@ -37,10 +37,15 @@ public class Main {
             }
 
             Hex h = new Hex();
+            int maxDistance = 0;
             // arraylist directions contains now directions from start Hex to goal Hex
             for (String d : directions) {
                 int[] coords = getDirectionByCoords(d);
                 h.incrementCoords(coords[0], coords[1]);
+                int tempDistance = determineDistance(h);
+                if (tempDistance > maxDistance) {
+                    maxDistance = tempDistance;
+                }
             }
 
             int[] coords = h.getCoordinates();
@@ -48,6 +53,8 @@ public class Main {
 
             int distance = determineDistance(h);
             System.out.println("Distance is: " + distance);
+
+            System.out.println("Maximum distance is: " + maxDistance);
 
             // Always close files.
             bufferedReader.close();
