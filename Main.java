@@ -22,35 +22,32 @@ public class Main {
             BufferedReader bufferedReader =
                     new BufferedReader(fileReader);
 
+            ArrayList<String> directions = new ArrayList<>();
+
             while((line = bufferedReader.readLine()) != null) {
-                System.out.println(line);
 
                 // more code
+                line = line.replaceAll("[^a-z]+", " ");
+                String[] strings = line.trim().split(" ");
 
-                int sum = 0;
-                // set first int
-                int firstInt = Character.getNumericValue(line.charAt(0));
-                int previous = Character.getNumericValue(line.charAt(0));
-
-                for (int i = 1; i < line.length(); i++) {
-                    // current int
-                    int j = Character.getNumericValue(line.charAt(i));
-
-                    // if previous is same as current, add to sum
-                    if (j == previous) {
-                        sum += j;
-                    }
-
-                    // set previous int for the next round
-                    previous = j;
+                for (int i=0; i<strings.length; i++) {
+                    directions.add(strings[i]);
                 }
-                if (Character.getNumericValue(line.charAt(line.length()-1)) == firstInt) {
-                    sum += firstInt;
-                }
-
-                System.out.println("Sum is: " + sum);
 
             }
+
+            Hex h = new Hex();
+            // arraylist directions contains now directions from start Hex to goal Hex
+            for (String d : directions) {
+                int[] coords = getDirectionByCoords(d);
+                h.incrementCoords(coords[0], coords[1]);
+            }
+
+            int[] coords = h.getCoordinates();
+            System.out.println("Destination is: " + coords[0] + "," + coords[1]);
+
+            int distance = determineDistance(h);
+            System.out.println("Distance is: " + distance);
 
             // Always close files.
             bufferedReader.close();
@@ -69,4 +66,135 @@ public class Main {
         }
 
     }
+
+    public static int determineDistance(Hex h) {
+        int distance = 0;
+        int[] coords = h.getCoordinates();
+        if (coords[0] > 0 && coords[1] < 0) {
+            // move nw
+            while (coords[0] > 0 || coords[1] < 0) {
+                coords[0]--;
+                coords[1]++;
+                distance++;
+            }
+            // check wheter x=0 or y=0 is reached and move accordingly
+            if (coords[0] == 0) {
+                while (coords[1] < 0) {
+                    coords[1]++;
+                    distance++;
+                }
+            } else {
+                while (coords[0] > 0) {
+                    coords[0]--;
+                    distance++;
+                }
+            }
+        } else if (coords[0] < 0 && coords[1] < 0) {
+            // move ne
+            while (coords[1] < 0) {
+                coords[1]++;
+                distance++;
+            }
+            while (coords[0] < 0) {
+                coords[0]++;
+                distance++;
+            }
+        } else if (coords[0] < 0 && coords[1] > 0) {
+            // move se
+            while (coords[0] < 0 || coords[1] > 0) {
+                coords[0]++;
+                coords[1]--;
+                distance++;
+            }
+            // check wheter x=0 or y=0 is reached and move accordingly
+            if (coords[0] == 0) {
+                while (coords[1] > 0) {
+                    coords[1]--;
+                    distance++;
+                }
+            } else {
+                while (coords[0] < 0) {
+                    coords[0]++;
+                    distance++;
+                }
+            }
+        } else if (coords[0] > 0 && coords[0] > 0) {
+            // move sw
+            // decrement y until it hits zero
+            while (coords[1] > 0) {
+                coords[1]--;
+                distance++;
+            }
+            // move w
+            while (coords[0] > 0) {
+                coords[0]--;
+                distance++;
+            }
+            // and finally x/y-axes
+        } else if (coords[0] == 0) {
+            if (coords[1] < 0) {
+                // move n
+                while (coords[1] < 0) {
+                    coords[1]++;
+                    distance++;
+                }
+            } else {
+                // move s
+                while (coords[1] > 0) {
+                    coords[1]--;
+                    distance++;
+                }
+            }
+        } else if (coords[1] == 0){
+            if (coords[0] < 0) {
+                // move ne
+                while (coords[0] < 0) {
+                    coords[0]++;
+                    distance++;
+                }
+            } else {
+                // move sw
+                while (coords[0] > 0) {
+                    coords[0]--;
+                    distance++;
+                }
+            }
+        }
+
+        return distance;
+    }
+
+    public static int[] getDirectionByCoords(String direction) {
+        int x = 0;
+        int y = 0;
+        int[] retval = {x , y};
+        switch (direction) {
+            case "ne" :
+                x = 1;
+                break;
+            case "n" :
+                y = 1;
+                break;
+            case "se" :
+                x = 1;
+                y = -1;
+                break;
+            case "sw" :
+                x = -1;
+                break;
+            case "s" :
+                y = -1;
+                break;
+            case "nw" :
+                x = -1;
+                y = 1;
+                break;
+            default:
+                return retval;
+        }
+        retval[0] = x;
+        retval[1] = y;
+        return retval;
+    }
+
 }
