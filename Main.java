@@ -9,6 +9,12 @@ public class Main {
     public static void main(String[] args) {
 	// write your code here
 
+        // create 128*128 grid
+        // 0,0 0,1 0,2 ...
+        // 1,0 1,1 1,2 ...
+        // change to node to true if used
+        boolean[][] grid = new boolean[128][128];
+
         // form every input
         String input = "jzgqcdpd-";
         String[] inputs = new String[128];
@@ -34,10 +40,138 @@ public class Main {
                 totbin = totbin.concat(bin);
             }
             totalUsed += used(totbin);
+            // mark 1 as used for each row
+            grid = markUsed(totbin, grid, j);
+        }
+
+        // check node by node if used or not
+        // if used, check adjacent nodes
+        // mark already check node coordinates into a list
+        List<Integer[]> checkedNodes = new ArrayList<>();
+        // list above has int[] with xy pair
+        int regions = 0;
+        for (i=0;i<grid.length;i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if (grid[i][j]) {
+                    // node shouldn't be in a checkedNode
+                    if (!isChecked(i, j, checkedNodes)) {
+                        Integer[] putin = {i, j};
+                        regions++;
+                        checkedNodes.add(putin);
+                        // ??? regionCheck does nothing but adds all regional nodes into a list ???
+                        // then move along with next empty node
+                        regionCheck(grid, i, j, checkedNodes);
+                    }
+                }
+            }
         }
 
         System.out.println("Used: " + totalUsed);
+        System.out.println("Regions: " + regions);
 
+
+    }
+
+    public static void printGrid(boolean[][] grid) {
+        for (int i=0;i<grid.length;i++) {
+            for (int j=0;j<grid[0].length;j++) {
+                System.out.print(grid[i][j]);
+            }
+            System.out.println("");
+        }
+    }
+
+    public static boolean[][] markUsed(String totbin, boolean[][] grid, int j) {
+        for (int i = 0; i < totbin.length(); i++) {
+            char c = totbin.charAt(i);
+            if (c == '1') {
+                grid[j][i] = true;
+            } else {
+                grid[j][i] = false;
+            }
+        }
+        return grid;
+    }
+
+    public static boolean regionCheck(boolean[][] grid, int x, int y, List<Integer[]> checkedNodes) {
+        // in 128*128 grid 1 represents used and 0 free node
+        // check how many regions there are
+        // a region is formed by adjacent used nodes (no diagonals)
+        // x,y give a current position
+        // checkednodes includes nodes that are already part of checked region
+
+        // check adjacent nodes
+        // check if they are inside the grid
+
+        // north
+        if (x-1 >= 0) {
+            // legal
+            if (grid[x-1][y]) {
+                if (!isChecked(x - 1, y, checkedNodes)) {
+                    // legal
+                    // add adjacent node to list
+                    Integer[] temp = {x - 1, y};
+                    checkedNodes.add(temp);
+                    // recursive call
+                    regionCheck(grid, x - 1, y, checkedNodes);
+                }
+            }
+        }
+        // east
+        if (y+1 < 128) {
+            if (grid[x][y+1]) {
+                if (!isChecked(x, y + 1, checkedNodes)) {
+                    // legal
+                    // add adjacent node to list
+                    Integer[] temp = {x, y + 1};
+                    checkedNodes.add(temp);
+                    // recursive call
+                    regionCheck(grid, x, y + 1, checkedNodes);
+                }
+            }
+        }
+        // south
+        if (x+1 < 128) {
+            if (grid[x+1][y]) {
+                if (!isChecked(x + 1, y, checkedNodes)) {
+                    // legal
+                    // add adjacent node to list
+                    Integer[] temp = {x + 1, y};
+                    checkedNodes.add(temp);
+                    // recursive call
+                    regionCheck(grid, x + 1, y, checkedNodes);
+                }
+            }
+        }
+        // west
+        if (y-1 >= 0) {
+            if (grid[x][y-1]) {
+                if (!isChecked(x, y - 1, checkedNodes)) {
+                    // legal
+                    // add adjacent node to list
+                    Integer[] temp = {x, y - 1};
+                    checkedNodes.add(temp);
+                    // recursive call
+                    regionCheck(grid, x, y - 1, checkedNodes);
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean isChecked(int x, int y, List<Integer[]> checkedNodes) {
+        // checks if a node is in a checkedList
+        for (int k=0; k<checkedNodes.size(); k++) {
+            Integer[] check = checkedNodes.get(k);
+            if (check[0] == x && check[1] == y) {
+                // it's already checked
+         //       System.out.println("cn: " + x + "," + y);
+
+                return true;
+            }
+        }
+        return false;
     }
 
     public static int used(String bin) {
