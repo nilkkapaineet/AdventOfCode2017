@@ -22,35 +22,27 @@ public class Main {
             BufferedReader bufferedReader =
                     new BufferedReader(fileReader);
 
+            String[] programs = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p"};
+          //  String[] ps = {"a","b","c","d","e"};
+
             while((line = bufferedReader.readLine()) != null) {
-                System.out.println(line);
-
-                // more code
-
-                int sum = 0;
-                // set first int
-                int firstInt = Character.getNumericValue(line.charAt(0));
-                int previous = Character.getNumericValue(line.charAt(0));
-
-                for (int i = 1; i < line.length(); i++) {
-                    // current int
-                    int j = Character.getNumericValue(line.charAt(i));
-
-                    // if previous is same as current, add to sum
-                    if (j == previous) {
-                        sum += j;
+                String[] splitted = line.split(",");
+      //          for (long b=0; b<1000000000; b++) {
+                    for (int i = 0; i < splitted.length; i++) {
+                        if (splitted[i].charAt(0) == 'p') {
+                            programs = partner(splitted[i], programs);
+                        } else if (splitted[i].charAt(0) == 's') {
+                            programs = spin(splitted[i], programs);
+                        } else if (splitted[i].charAt(0) == 'x') {
+                            programs = exchange(splitted[i], programs);
+                        } else {
+                            // problem
+                        }
                     }
-
-                    // set previous int for the next round
-                    previous = j;
                 }
-                if (Character.getNumericValue(line.charAt(line.length()-1)) == firstInt) {
-                    sum += firstInt;
-                }
+        //    }
 
-                System.out.println("Sum is: " + sum);
-
-            }
+            printArr(programs);
 
             // Always close files.
             bufferedReader.close();
@@ -68,5 +60,61 @@ public class Main {
             // ex.printStackTrace();
         }
 
+    }
+
+    public static void printArr(String[] arr) {
+        for (int i=0; i<arr.length; i++) {
+            System.out.print(arr[i]);
+        }
+        System.out.println("");
+    }
+
+    public static String[] spin(String order, String[] programs) {
+        order = order.substring(1);
+        int spin = Integer.parseInt(order);
+        // spin all characters 'spin' steps
+        String[] temp = new String[programs.length];
+        for (int i=0; i<programs.length; i++) {
+            temp[(i+spin)%programs.length] = programs[i];
+        }
+
+        return temp;
+    }
+
+    public static String[] exchange(String order, String[] programs) {
+        // remove x
+        order = order.substring(1);
+        String[] splitted = order.split("/");
+        int first = Integer.parseInt(splitted[0]);
+        int second = Integer.parseInt(splitted[1]);
+        String a = programs[first];
+        String b = programs[second];
+        programs[second] = a;
+        programs[first] = b;
+        return programs;
+    }
+
+    public static String[] partner(String order, String[] programs) {
+        order = order.substring(1);
+        String[] splitted = order.split("/");
+        // indexes for chars
+        int first = 0;
+        int second = 0;
+        for (int i=0; i<programs.length; i++) {
+            // loop through programs
+            // if char is one to be found, record index
+            if (programs[i].equals(splitted[0])) {
+                first = i;
+            }
+            if (programs[i].equals(splitted[1])) {
+                second = i;
+            }
+        }
+        String a = programs[second];
+        String b = programs[first];
+        // swap partners
+        programs[first] = a;
+        programs[second] = b;
+        return programs;
     }
 }
