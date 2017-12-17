@@ -1,72 +1,50 @@
 package com.company;
-import java.io.*;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class Main {
-    public static void main(String [] args) {
 
-        // The name of the file to open.
-        String fileName = "file.txt";
+    public static void main(String[] args) {
+	// write your code here
+        int stepSize = 301;
+        int[] insertions = new int[2018];
 
-        // This will reference one line at a time
-        String line = "";
+        // first step must be outside of the loop because of division by zero
+        insertions[0] = 0;
+        insertions[1] = 1;
+        int currentPosition = 1;
 
-        try {
-            // FileReader reads text files in the default encoding.
-            FileReader fileReader =
-                    new FileReader(fileName);
-
-            // Always wrap FileReader in BufferedReader.
-            BufferedReader bufferedReader =
-                    new BufferedReader(fileReader);
-
-            while((line = bufferedReader.readLine()) != null) {
-                System.out.println(line);
-
-                // more code
-
-                int sum = 0;
-                // set first int
-                int firstInt = Character.getNumericValue(line.charAt(0));
-                int previous = Character.getNumericValue(line.charAt(0));
-
-                for (int i = 1; i < line.length(); i++) {
-                    // current int
-                    int j = Character.getNumericValue(line.charAt(i));
-
-                    // if previous is same as current, add to sum
-                    if (j == previous) {
-                        sum += j;
-                    }
-
-                    // set previous int for the next round
-                    previous = j;
-                }
-                if (Character.getNumericValue(line.charAt(line.length()-1)) == firstInt) {
-                    sum += firstInt;
-                }
-
-                System.out.println("Sum is: " + sum);
-
+        for (int i=2; i<2018; i++) {
+            // step forward
+            List<Integer> temp = new ArrayList<>();
+            currentPosition = ((currentPosition+stepSize)%i)+1;
+            // get elements after cp
+            for (int cp=i-1; cp>=currentPosition; cp--) {
+                temp.add(insertions[cp]);
             }
+            insertions[currentPosition] = i;
+            int tempsize = temp.size();
+            for (int cp=tempsize-1; cp>=0; cp--) {
+                insertions[currentPosition+1+cp] = temp.get(0);
+                temp.remove(0);
+            }
+        }
+        System.out.println("Value after 9 rounds: " + insertions[currentPosition+1]);
+    }
 
-            // Always close files.
-            bufferedReader.close();
+    public static void printArr(int[] arr) {
+        for (int i=0; i<arr.length; i++) {
+            System.out.print(arr[i] + " ");
         }
-        catch(FileNotFoundException ex) {
-            System.out.println(
-                    "Unable to open file '" +
-                            fileName + "'");
-        }
-        catch(IOException ex) {
-            System.out.println(
-                    "Error reading file '"
-                            + fileName + "'");
-            // Or we could just do this:
-            // ex.printStackTrace();
-        }
+        System.out.println("");
+    }
 
+    public static void printList(List<Integer> printable) {
+        // prints list in reverse
+        for (int i=0; i<printable.size(); i++) {
+            System.out.print(i + " ");
+        }
+        System.out.println("");
     }
 }
