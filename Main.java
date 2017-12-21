@@ -1,17 +1,20 @@
 package com.company;
+
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
 public class Main {
-    public static void main(String [] args) {
 
+    public static void main(String[] args) {
+	// write your code here
         // The name of the file to open.
         String fileName = "file.txt";
 
         // This will reference one line at a time
         String line = "";
+        int numberOfLines = 0;
+        int lineWidth = 0;
+        ArrayList<String> lines = new ArrayList<>();
 
         try {
             // FileReader reads text files in the default encoding.
@@ -23,36 +26,12 @@ public class Main {
                     new BufferedReader(fileReader);
 
             while((line = bufferedReader.readLine()) != null) {
-                System.out.println(line);
-
-                // more code
-
-                int sum = 0;
-                // set first int
-                int firstInt = Character.getNumericValue(line.charAt(0));
-                int previous = Character.getNumericValue(line.charAt(0));
-
-                for (int i = 1; i < line.length(); i++) {
-                    // current int
-                    int j = Character.getNumericValue(line.charAt(i));
-
-                    // if previous is same as current, add to sum
-                    if (j == previous) {
-                        sum += j;
-                    }
-
-                    // set previous int for the next round
-                    previous = j;
+                if (line.length() > lineWidth) {
+                    lineWidth = line.length();
                 }
-                if (Character.getNumericValue(line.charAt(line.length()-1)) == firstInt) {
-                    sum += firstInt;
-                }
-
-                System.out.println("Sum is: " + sum);
-
+                lines.add(line);
+                numberOfLines++;
             }
-
-            // Always close files.
             bufferedReader.close();
         }
         catch(FileNotFoundException ex) {
@@ -68,5 +47,103 @@ public class Main {
             // ex.printStackTrace();
         }
 
+
+
+        // read file and get length and width of needed char array
+
+    // read a diagram first, then find out the route
+
+    // every line is looped char by char
+    // if char is not empty, it is either Letter, -, | or +
+
+        char[][] diagram = new char[numberOfLines][lineWidth];
+        int x=0;
+        int y=0;
+        String direction = "";
+        ArrayList<Character> letters = new ArrayList<>();
+
+        for (int i=0; i<numberOfLines; i++) {
+            String newline = lines.get(i);
+            for (int j=0; j<lineWidth; j++) {
+                char temp = newline.charAt(j);
+                if (temp == ' ') {
+                    // do nothing
+                    diagram[i][j] = '#';
+                } else if (temp == '-') {
+                    diagram[i][j] = '-';
+                } else if (temp == '|') {
+                    diagram[i][j] = '|';
+                } else if (temp == '+') {
+                    diagram[i][j] = '+';
+                } else {
+                    // this stores a letter
+                    diagram[i][j] = temp;
+                }
+            }
+        }
+
+        // find starting point: xy, direction=d (downwards)
+        for (int i=0; i<lineWidth; i++) {
+            if (diagram[0][i] == '|') {
+                y= i;
+                direction = "d";
+            }
+        }
+
+        while (true) {
+            // direction of movement should be stored
+            // if a letter occurs, direction remains the same
+            // get next xy
+            if (direction.equals("d")) {
+                x = x + 1;
+            } else if (direction.equals("r")) {
+                y = y + 1;
+            } else if (direction.equals("u")) {
+                x = x - 1;
+            } else if (direction.equals("l")) {
+                y = y - 1;
+            }
+
+            // get next xy as above
+            // direction may change when + occurs
+            // find out other directions than current direction
+            char next = diagram[x][y];
+            if (next == '+') {
+                // direction changes, find out other directions
+                if (diagram[x][y+1] != '#' && !direction.equals("l")) {
+                    direction = "r";
+                } else if (diagram[x-1][y] != '#' && !direction.equals("d")) {
+                    direction = "u";
+                } else if (diagram[x+1][y] != '#' && !direction.equals("u")) {
+                    direction = "d";
+                } else if (diagram[x][y-1] != '#' && !direction.equals("r")) {
+                    direction = "l";
+                } else {
+                    // problem
+                }
+            } else {
+                // direction remains, check if letter
+                if (next == '|' || next == '-') {
+                    // do nothing
+                } else if (next == '#') {
+                    // get out
+                    getout(letters);
+                } else {
+                        // store letter
+                        letters.add(next);
+                }
+            }
+
+        }
+
+    }
+
+    public static void getout(ArrayList<Character> letters) {
+        System.out.println("Letters met: ");
+        for (char l : letters) {
+            System.out.print(l + " ");
+        }
+        System.out.println("");
+        System.exit(0);
     }
 }
