@@ -73,111 +73,96 @@ public class Main {
         ArrayList<Grid3> g3l = new ArrayList<>();
         g3l.add(startingGrid);
         int totalPixels = 0;
-        /*
-        1: gs 3
-
-        2: gs4
-        example with 4*4 grid
-        division: gridsize % 2 = 0
-        bits = gridsize / 2 = 2
-        apply rule: 2-->3
-        united grid size = bits * 3 = 6
-
-        3 gs: 6
-        example continues
-        division: 6 % 2 = 0
-        bits: 6 / 2 = 3
-        rule: 2 --> 3
-        ugs = 3 * 3 = 9
-
-        4 again:
-        division: 9 % 2 = 1
-        9 % 3 = 0
-        bits: 9 / 3 = 3
-        rule: 3 --> 4
-        ugs: 3 * 4 = 12
-
-         5: gs 12
-
-         12/2 = 6
-         2-->3
-         6*3 = 18
-
-         */
         int gridsize = 3;
+        startingGrid.printGrid3();
+
         for (int i = 0; i < 5; i++) { // iterations
             // define size of current grid
             System.out.println("Grid size = " + gridsize);
+
             boolean[][] gridUnited = new boolean[gridsize][gridsize];
             // reassemble gridunited
+            int row = 0;
+            int col = 0;
             while (!g2l.isEmpty()) {
                 Grid2 g2old = g2l.get(0);
                 g2l.remove(0);
-                System.out.println("iteration " + i + " : g2 removed");
                 boolean[][] g2o = g2old.getPixels();
-                int gridParts = gridsize / 2;
-                for (int row = 0; row < gridParts; row += 2) {
-                    for (int col = 0; col < gridParts; col += 2) {
-                        for (int x = 0; x < 2; x++) {
-                            for (int y = 0; y < 2; y++) {
-                                gridUnited[row][col] = g2o[x][y];
-                            }
-                        }
+                for (int x = 0; x < 2; x++) {
+                    for (int y = 0; y < 2; y++) {
+                        gridUnited[row + x][col + y] = g2o[x][y];
                     }
                 }
+                col += 2;
+                if (col > (gridsize - 1)) {
+                    row += 2;
+                    col = 0;
+                }
             }
+            row = 0;
+            col = 0;
             while (!g3l.isEmpty()) {
                 Grid3 g3old = g3l.get(0);
+                g3old.printGrid3();
                 g3l.remove(0);
-                System.out.println("iteration " + i + " : g3 removed");
                 boolean[][] g3o = g3old.getPixels();
-                int gridParts = gridsize / 3;
-                for (int row = 0; row < gridParts; row += 3) {
-                    for (int col = 0; col < gridParts; col += 3) {
-                        for (int x = 0; x < 3; x++) {
-                            for (int y = 0; y < 3; y++) {
-                                gridUnited[row][col] = g3o[x][y];
-                            }
-                        }
+                for (int x = 0; x < 3; x++) {
+                    for (int y = 0; y < 3; y++) {
+                        gridUnited[row+x][col+y] = g3o[x][y];
                     }
                 }
-            }
+                col += 3;
+                if (col > (gridsize - 1)) {
+                    row += 3;
+                    col = 0;
+                }            }
 
             // reassembly ready
-
             if (gridsize % 2 == 0) {
-                System.out.println("iteration " + i + " chopping into 2 with grid size " + gridsize);
                 // chop united grid into pieces of 2
-                boolean[][] tempGrid = new boolean[2][2];
-                int gridParts = gridsize / 2;
-                for (int row = 0; row < gridsize; row += 2) {
-                    for (int col = 0; col < gridsize; col += 2) {
+                for (int utdRow=0; utdRow<gridsize; utdRow += 2) {
+                    for (int utdCol = 0; utdCol < gridsize; utdCol += 2) {
+                        boolean[][] tempGrid = new boolean[2][2];
+                        int gridParts = gridsize / 2;
                         for (int x = 0; x < 2; x++) {
                             for (int y = 0; y < 2; y++) {
-                                tempGrid[x][y] = gridUnited[row + x][col + y];
+                                System.out.println((utdRow+x) + "," + (utdCol+y) + " of: " + gridsize);
+                                tempGrid[x][y] = gridUnited[utdRow + x][utdCol + y];
                             }
                         }
                         Grid2 tg2 = new Grid2(tempGrid);
+                        System.out.println("adding following grid2: ");
+                        tg2.printGrid2();
                         g2l.add(tg2);
-                        System.out.println("iteration " + i + " tg2 added, col: " + col);
                     }
                 }
+                System.out.println("intermediate check for objects size of 2");
+                for (int e=0; e<g2l.size(); e++) {
+                    Grid2 eg = g2l.get(e);
+                    eg.printGrid2();
+                }
             } else if (gridsize % 3 == 0) {
-                System.out.println("iteration " + i + " chopping into 3");
                 // chop united grid into pieces of 3
-                boolean[][] tempGrid = new boolean[3][3];
-                int gridParts = gridsize / 3;
-                for (int row = 0; row < gridsize; row += 3) {
-                    for (int col = 0; col < gridsize; col += 3) {
+                for (int utdRow=0; utdRow<gridsize; utdRow += 3) {
+                    for (int utdCol = 0; utdCol < gridsize; utdCol += 3) {
+                        boolean[][] tempGrid = new boolean[3][3];
+                        int gridParts = gridsize / 3;
                         for (int x = 0; x < 3; x++) {
                             for (int y = 0; y < 3; y++) {
-                                tempGrid[x][y] = gridUnited[row + x][col + y];
+                                System.out.println((utdRow+x) + "," + (utdCol+y) + " of: " + gridsize);
+                                tempGrid[x][y] = gridUnited[utdRow + x][utdCol + y];
                             }
                         }
                         Grid3 tg3 = new Grid3(tempGrid);
+                        System.out.println("adding following grid 3: ");
+                        tg3.printGrid3();
                         g3l.add(tg3);
-                        System.out.println("iteration " + i + " g3l added with size: " + gridsize + " col: " + col + " gridparts: " + gridParts);
                     }
+                }
+                System.out.println("intermediate check for objects size of 3");
+                for (int e=0; e<g3l.size(); e++) {
+                    Grid3 eg = g3l.get(e);
+                    eg.printGrid3();
                 }
             } else {
                 // too big grid to munch
@@ -196,11 +181,13 @@ public class Main {
                         Grid2 compG2 = ruleToGrid2(rule);
                         if (compG2.match(g2old)) {
                             tempResult3 = ruleToGrid3Target(rule);
+                            System.out.println(rule);
                             g3l.add(tempResult3);
+                            System.out.println("what i've done");
+                            tempResult3.printGrid3();
                             break;
                         }
                     }
-                    System.out.println("iteration " + i + " rule 2to3 applied");
                 }
                 int gridParts = gridsize / 2;
                 gridsize = gridParts * 3;
@@ -208,7 +195,6 @@ public class Main {
                 // temporal array for proper ordering of grid
                 List<Grid2> tempArrOrder = new ArrayList<>();
                 int orderIndex = 0;
-                System.out.println("iteration " + i + " rule 3to4 applied");
                 while (!g3l.isEmpty()) {
                     Grid3 g3old = g3l.get(0);
                     g3l.remove(0);
@@ -216,8 +202,12 @@ public class Main {
                     for (String rule : rules3) {
                         Grid3 compG3 = ruleToGrid3(rule);
                         if (compG3.match(g3old)) {
+                            System.out.println("check size 9");
+                            g3old.printGrid3();
+                            compG3.printGrid3();
+
                             Grid4 g4 = ruleToGrid4(rule);
-                            // this gives wrong order of grid2 objects
+                            System.out.println(rule);
                             g2l.add(g4.getTopLeft());
                             g2l.add(g4.getTopRight());
                             tempArrOrder.add(g4.getBottomLeft());
@@ -226,12 +216,10 @@ public class Main {
                             break;
                         }
                     }
-                    System.out.println("iteration " + i + " orderindex: " + orderIndex);
                     if (orderIndex == gridsize/3) {
                         while (!tempArrOrder.isEmpty()) {
                             g2l.add(tempArrOrder.get(0));
                             tempArrOrder.remove(0);
-                            System.out.println("hiiohoi iter " + i);
                         }
                         orderIndex = 0;
                     }
